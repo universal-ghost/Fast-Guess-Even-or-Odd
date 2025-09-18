@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>حدس زوج یا فرد - کارت افقی</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<style>
+body {
+    font-family: 'Tahoma', sans-serif;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    direction: rtl;
+}
+.game-container {
+    background: #1e1e2f;
+    padding: 30px 50px;
+    border-radius: 25px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 900px; /* کارت افقی */
+    height: 250px;
+    position: relative;
+}
+.number-display {
+    font-size: 120px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    animation: pulse 0.4s infinite alternate;
+}
+@keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.2); }
+}
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.options button {
+    font-size: 24px;
+    padding: 18px 25px;
+    border-radius: 18px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+.options button ion-icon {
+    margin-left: 10px;
+    font-size: 28px;
+}
+.options .btn-primary {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #fff;
+}
+.options .btn-success {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    color: #fff;
+}
+.options button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 25px rgba(255,255,255,0.4);
+}
+.result {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffd700;
+    text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+}
+.score {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 22px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    align-items: center;
+}
+.score ion-icon {
+    font-size: 28px;
+    vertical-align: middle;
+    color: #ffd700;
+}
+</style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="number-display" id="number">
+        <ion-icon name="sync-outline" class="me-2"></ion-icon>0
+    </div>
+
+    <div class="options">
+        <button class="btn btn-primary" data-choice="even">
+            زوج <ion-icon name="checkbox-outline"></ion-icon>
+        </button>
+        <button class="btn btn-success" data-choice="odd">
+            فرد <ion-icon name="alert-circle-outline"></ion-icon>
+        </button>
+    </div>
+
+    <div class="score">
+        <span>شما: <ion-icon name="trophy-outline"></ion-icon> <span id="playerScore">0</span></span>
+        <span>باخت: <ion-icon name="close-circle-outline"></ion-icon> <span id="computerScore">0</span></span>
+    </div>
+
+    <div class="result">نتیجه اینجا نمایش داده می‌شود</div>
+</div>
+
+<script>
+let playerScore = 0;
+let computerScore = 0;
+
+const buttons = document.querySelectorAll('.options button');
+const numberDisplay = document.getElementById('number');
+const resultDiv = document.querySelector('.result');
+const playerScoreSpan = document.getElementById('playerScore');
+const computerScoreSpan = document.getElementById('computerScore');
+
+let currentNumber = 0;
+let numberInterval;
+
+function startNumberChange() {
+    numberInterval = setInterval(() => {
+        currentNumber = Math.floor(Math.random() * 100) + 1;
+        numberDisplay.innerHTML = `<ion-icon name="sync-outline" class="me-2"></ion-icon>${currentNumber}`;
+    }, 120);
+}
+startNumberChange();
+
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        clearInterval(numberInterval);
+
+        const playerChoice = button.getAttribute('data-choice');
+        const isEven = currentNumber % 2 === 0;
+        let resultText = '';
+
+        if((playerChoice === 'even' && isEven) || (playerChoice === 'odd' && !isEven)){
+            resultText = `شما درست حدس زدید! 🎉 (عدد ${currentNumber})`;
+            playerScore++;
+        } else {
+            resultText = `شما اشتباه حدس زدید 😢 (عدد ${currentNumber})`;
+            computerScore++;
+        }
+
+        resultDiv.textContent = resultText;
+        playerScoreSpan.textContent = playerScore;
+        computerScoreSpan.textContent = computerScore;
+
+        setTimeout(() => {
+            resultDiv.textContent = '';
+            startNumberChange();
+        }, 2000);
+    });
+});
+</script>
+
+</body>
+</html>
